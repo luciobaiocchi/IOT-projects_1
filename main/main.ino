@@ -106,7 +106,8 @@ void fadingRedLed(){
   if (redLedIntensity == 0 || redLedIntensity == 255) {
     fadeAmount = -fadeAmount ; 
   } 
-  delay(20);
+  Serial.println(redLedIntensity);
+  delay(22);
 }
 
 
@@ -114,7 +115,6 @@ void checkIfGoSleep(){
   if (isTimeElapsed()) {
     allLedOff();
     removeInterruptsForStartGame();
-
     addInterruptsForSleep(); 
     set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
     sleep_enable(); 
@@ -129,7 +129,7 @@ void checkIfGoSleep(){
 
 void addInterruptsForSleep(){
   for (int i = 8; i < 12; i++){
-    enableInterrupt(i, wakeUp, CHANGE);
+    enableInterrupt(i, wakeUp, RISING);
   }
 }
 
@@ -163,6 +163,7 @@ bool isTimeElapsed(){
 }
 
 void allLedOff(){
+  analogWrite(LED_S, LOW);
   redLedIntensity = 0;
   for (int i = 3; i < 8; i++){
     digitalWrite(i, LOW);

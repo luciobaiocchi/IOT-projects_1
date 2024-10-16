@@ -45,21 +45,23 @@ void setup() {
   Serial.begin(9600); 
 }
 
-void setInitialStateStartingTime();
+void setStartingTime();
 void sleeping();
 void fadingRedLed();
 void checkIfGoSleep();
 bool isTimeElapsed();
-long mapDiff(long x, long in_min, long in_max, long out_min, long out_max);
+long mapDiff();
 void allLedOff();
-void logButton(int buttonNumber);
+void logButton();
 void setDifficulty();
 void addInterruptsForSleep();
 void removeInterruptsForSleep();
 void addInterruptsForStartGame();
 void removeInterruptsForStartGame();
 void startMinigame();
-void switchState();
+boolean isCorrect();
+int getRandomNumber();
+void buttonPressed();
 
 
 int gameState = 0;
@@ -68,34 +70,37 @@ long start_initial_state = 0;
 int gameDiff = 1;
 int redLedIntensity = 0;
 int fadeAmount = 5;
+//-----------------//
+int gameRound = 0;
 int totalTime = 10000;
-
+int factor = 500;
+int buttons[4]= {1, 0, 1, 1};
 
 
 void loop() {
-  Serial.println(gameState);
   switch(gameState){
     case 0:
-      setInitialStateStartingTime();
-      switchState(1);
+      setStartingTime();
+      gameState = 1;
       break;
   	case 1:
       fadingRedLed();
-      setDifficulty();
       checkIfGoSleep();
       addInterruptsForStartGame();
+      setDifficulty();
   	  break;
     case 2:
-
+      Serial.println(totalTime);
+      lcd.clear();
+      gameState = 3;
       break;
     case 3:
-      Serial.println("game");
       break;
   }
 
 }
 
-void setInitialStateStartingTime(){
+void setStartingTime(){
   start_initial_state = millis();
 }
 
@@ -106,7 +111,6 @@ void fadingRedLed(){
   if (redLedIntensity == 0 || redLedIntensity == 255) {
     fadeAmount = -fadeAmount ; 
   } 
-  Serial.println(redLedIntensity);
   delay(22);
 }
 
@@ -180,16 +184,33 @@ void removeInterruptsForStartGame(){
 
 
 void startMinigame(){
-  switchState(2);
+  gameState = 2;
   totalTime = totalTime - (gameDiff * 1000); 
   allLedOff();
   removeInterruptsForStartGame();
 }
 
-void switchState(int state){
-  lcd.clear();
-  gameState = state;
-  lcd.print(String("State: ") + String(state));
+
+int getRandomNumber(){
+  return random(0, 15);
+}
+
+boolean isCorrect(int number, int buttons[]){
+  float bin = 0;
+  for (int i = 0; i < 4; i++){
+    if (buttons[i] == 1){
+    	bin = (bin + pow(2,i));
+    }
+  }
+  return round(bin) == number;
+}
+
+void buttonPressed(int i){
+  if (buttons[i] == 0){
+    buttons[i] = 1;
+  }else{
+    buttons[i] = 0;
+  }
 }
 
 

@@ -40,7 +40,7 @@ void setup() {
   
   lcd.init();
   lcd.backlight();
-  lcd.setCursor(2, 1);
+  lcd.setCursor(0, 0);
 
   Serial.begin(9600); 
 }
@@ -62,6 +62,7 @@ void startMinigame();
 boolean isCorrect();
 int getRandomNumber();
 void buttonPressed();
+void doAnimation();
 
 
 int gameState = 0;
@@ -70,6 +71,7 @@ long start_initial_state = 0;
 int gameDiff = 1;
 int redLedIntensity = 0;
 int fadeAmount = 5;
+int line = 0;
 //-----------------//
 int gameRound = 0;
 int totalTime = 10000;
@@ -91,10 +93,9 @@ void loop() {
   	  break;
     case 2:
       Serial.println(totalTime);
-      lcd.clear();
-      gameState = 3;
       break;
     case 3:
+      Serial.println(totalTime);
       break;
   }
 
@@ -212,6 +213,19 @@ void buttonPressed(int i){
     buttons[i] = 0;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

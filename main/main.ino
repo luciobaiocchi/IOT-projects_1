@@ -45,6 +45,8 @@ void setup() {
   lcd.setCursor(0, 0);
 
   Serial.begin(9600); 
+  Serial.print("start");
+  randomSeed(analogRead(0));
 }
 
 void setStartingTime();
@@ -64,9 +66,13 @@ void startMinigame();
 boolean isCorrect();
 int getRandomNumber();
 void buttonPressed();
+void buttontTwoPressed();
+void buttonThreePressed();
+void buttonFourPressed();
 void doAnimation();
 void checkEndTIme();
 void addInterruptsGame();
+
 
 int gameState = 0;
 int potVal = 0;
@@ -81,7 +87,13 @@ int totalTime = 10000;
 int buttons[4]= {1, 0, 1, 1};
 int randomNum = 0;
 
-
+/*Game State:
+0 -> first setup
+1 -> fading and sleep
+2 -> Setup game lcd display number 
+3 -> game loop
+4 -> game over
+*/
 void loop() {
   switch(gameState){
     case 0:
@@ -95,14 +107,36 @@ void loop() {
       setDifficulty();
   	  break;
     case 2:
-      checkEndTIme();
+      Serial.println("game");
+      for (int i = 0; i<10; i++){
+        randomNum = getRandomNumber();
+        lcd.clear();
+        lcd.print("number: "+ String(randomNum));
+        Serial.print(" "+ String(randomNum));
+        delay(1000);
+      }
+      //updating total time 
+      totalTime = STANDARD_TIME - (gameDiff * 1000) - (gameRound * FACTOR); 
+      allLedOff();
+      setStartingTime();
+      removeInterruptsForStartGame();
+      addInterruptsGame();
+      gameState = 3;
+      break;
+    case 3:
+      //checkEndTIme();
+      delay(22);
+      lcd.clear();
+      lcd.print("number: "+ String(randomNum));
+      //updating total time 
       if (isCorrect()){
         gameState = 1;
         gameRound++;
-        Serial.println("win");
+        Serial.print("win");
       }
       break;
-    case 3:
+    case 4:
+      //removeInterruptsForSleep();
       break;
   }
 
@@ -192,18 +226,11 @@ void removeInterruptsForStartGame(){
 
 void startMinigame(){
   gameState = 2;
-  totalTime = STANDARD_TIME - (gameDiff * 1000) - (gameRound * FACTOR); 
-  randomNum = getRandomNumber();
-  allLedOff();
-  setStartingTime();
-  addInterruptsGame();
-  removeInterruptsForStartGame();
-  lcd.print("number: "+ String(randomNum));
 }
 
 
 int getRandomNumber(){
-  return random(0, 15);
+  return random(16);
 }
 
 boolean isCorrect(){
@@ -224,18 +251,15 @@ void buttonPressed(int i){
   }
 }
 
-void buttonOnePressed(){
-  Serial.println("one press");
 
-}
 
 void checkEndTIme(){
   if (isTimeElapsed(totalTime)) {
     allLedOff();
     Serial.print("game Over");
-    gameState = 3;
+    gameState = 4;
   }
-  //Serial.println(totalTime - timeLeft());
+  Serial.println((totalTime - timeLeft())/ 1000);
 }
 
 long timeLeft(){
@@ -245,14 +269,24 @@ long timeLeft(){
 
 void addInterruptsGame(){
   enableInterrupt(BUTTON_1, buttonOnePressed, RISING);
-  /*enableInterrupt(BUTTON_1, buttonPressed(1), RISING);
-  enableInterrupt(BUTTON_2, buttonPressed(2), RISING);
-  enableInterrupt(BUTTON_3, buttonPressed(3), RISING);
-  enableInterrupt(BUTTON_4, buttonPressed(4), RISING);*/
+  enableInterrupt(BUTTON_2, buttontTwoPressed, RISING);
+  enableInterrupt(BUTTON_3, buttonThreePressed, RISING);
+  enableInterrupt(BUTTON_4, buttonFourPressed, RISING);
 }
 
 
-
+void buttonOnePressed(){
+  Serial.println("B 1");
+}
+void buttontTwoPressed(){
+  Serial.println("B 2");
+}
+void buttonThreePressed(){
+  Serial.println("B 3");
+}
+void buttonFourPressed(){
+  Serial.println("B 4");
+}
 
 
 

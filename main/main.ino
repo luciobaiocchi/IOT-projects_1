@@ -45,8 +45,9 @@ void setup() {
   lcd.setCursor(0, 0);
 
   Serial.begin(9600); 
-  Serial.print("start");
-  randomSeed(analogRead(0));
+  Serial.println("start " +  String(analogRead(A1)));
+  randomSeed(analogRead(A1));
+
 }
 
 void setStartingTime();
@@ -108,13 +109,9 @@ void loop() {
   	  break;
     case 2:
       Serial.println("game");
-      for (int i = 0; i<10; i++){
-        randomNum = getRandomNumber();
-        lcd.clear();
-        lcd.print("number: "+ String(randomNum));
-        Serial.print(" "+ String(randomNum));
-        delay(1000);
-      }
+      randomNum = getRandomNumber();
+      lcd.clear();
+      lcd.print("number -> "+ String(randomNum));
       //updating total time 
       totalTime = STANDARD_TIME - (gameDiff * 1000) - (gameRound * FACTOR); 
       allLedOff();
@@ -124,10 +121,7 @@ void loop() {
       gameState = 3;
       break;
     case 3:
-      //checkEndTIme();
-      delay(22);
-      lcd.clear();
-      lcd.print("number: "+ String(randomNum));
+      checkEndTIme();
       //updating total time 
       if (isCorrect()){
         gameState = 1;
@@ -251,17 +245,31 @@ void buttonPressed(int i){
   }
 }
 
-
-
 void checkEndTIme(){
   if (isTimeElapsed(totalTime)) {
     allLedOff();
     Serial.print("game Over");
     gameState = 4;
   }
-  Serial.println((totalTime - timeLeft())/ 1000);
+  printTimeLeft();
+  //lcd.println(displayTime);
 }
 
+//print remaining time in this format : ex 5.75 seconds (the last number is either 0 or 5)
+void printTimeLeft(){
+  int displayTime = (totalTime - timeLeft())/ 100;
+  /*if (displayTime % 5 == 0){
+    Serial.println( (float)(displayTime) * 0.01);
+    lcd.clear();
+    lcd.println(displayTime);
+  }*/
+  if (displayTime % 10 == 0){
+    Serial.println( displayTime / 10);
+    lcd.clear();
+    lcd.println(displayTime);
+  }
+}
+//return the time left for the timer in milliseconds 
 long timeLeft(){
   long timeLeft = millis() - start_timer_time;
   return timeLeft;

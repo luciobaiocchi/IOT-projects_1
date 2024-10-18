@@ -10,6 +10,8 @@
 #define LED_2 5
 #define LED_3 6
 #define LED_4 7
+#define STANDARD_TIME 10000
+#define FACTOR 500
 
 // Buttons declaration
 #define BUTTON_1 11
@@ -63,11 +65,12 @@ boolean isCorrect();
 int getRandomNumber();
 void buttonPressed();
 void doAnimation();
-
+void checkEndTIme();
+void addInterruptsGame();
 
 int gameState = 0;
 int potVal = 0;
-long start_initial_state = 0;
+long start_timer_time = 0;
 int gameDiff = 1;
 int redLedIntensity = 0;
 int fadeAmount = 5;
@@ -75,8 +78,8 @@ int line = 0;
 //-----------------//
 int gameRound = 0;
 int totalTime = 10000;
-int factor = 500;
 int buttons[4]= {1, 0, 1, 1};
+int randomNum = 0;
 
 
 void loop() {
@@ -92,17 +95,21 @@ void loop() {
       setDifficulty();
   	  break;
     case 2:
-      Serial.println(totalTime);
+      checkEndTIme();
+      if (isCorrect()){
+        gameState = 1;
+        gameRound++;
+        Serial.println("win");
+      }
       break;
     case 3:
-      Serial.println(totalTime);
       break;
   }
 
 }
 
 void setStartingTime(){
-  start_initial_state = millis();
+  start_timer_time = millis();
 }
 
   
@@ -117,7 +124,7 @@ void fadingRedLed(){
 
 
 void checkIfGoSleep(){
-  if (isTimeElapsed()) {
+  if (isTimeElapsed(10000)) {
     allLedOff();
     removeInterruptsForStartGame();
     addInterruptsForSleep(); 
@@ -162,9 +169,9 @@ long mapDiff(long x, long in_min, long in_max, long out_min, long out_max) {
 }
 
 
-bool isTimeElapsed(){
-  long timePassed = millis() - start_initial_state;
-  return timePassed > 5000;
+bool isTimeElapsed(int time){
+  long timePassed = millis() - start_timer_time;
+  return timePassed > time;
 }
 
 void allLedOff(){
@@ -183,12 +190,15 @@ void removeInterruptsForStartGame(){
   disableInterrupt(BUTTON_1);
 }
 
-
 void startMinigame(){
   gameState = 2;
-  totalTime = totalTime - (gameDiff * 1000); 
+  totalTime = STANDARD_TIME - (gameDiff * 1000) - (gameRound * FACTOR); 
+  randomNum = getRandomNumber();
   allLedOff();
+  setStartingTime();
+  addInterruptsGame();
   removeInterruptsForStartGame();
+  lcd.print("number: "+ String(randomNum));
 }
 
 
@@ -196,14 +206,14 @@ int getRandomNumber(){
   return random(0, 15);
 }
 
-boolean isCorrect(int number, int buttons[]){
+boolean isCorrect(){
   float bin = 0;
   for (int i = 0; i < 4; i++){
     if (buttons[i] == 1){
     	bin = (bin + pow(2,i));
     }
   }
-  return round(bin) == number;
+  return round(bin) == randomNum;
 }
 
 void buttonPressed(int i){
@@ -214,6 +224,32 @@ void buttonPressed(int i){
   }
 }
 
+void buttonOnePressed(){
+  Serial.println("one press");
+
+}
+
+void checkEndTIme(){
+  if (isTimeElapsed(totalTime)) {
+    allLedOff();
+    Serial.print("game Over");
+    gameState = 3;
+  }
+  //Serial.println(totalTime - timeLeft());
+}
+
+long timeLeft(){
+  long timeLeft = millis() - start_timer_time;
+  return timeLeft;
+}
+
+void addInterruptsGame(){
+  enableInterrupt(BUTTON_1, buttonOnePressed, RISING);
+  /*enableInterrupt(BUTTON_1, buttonPressed(1), RISING);
+  enableInterrupt(BUTTON_2, buttonPressed(2), RISING);
+  enableInterrupt(BUTTON_3, buttonPressed(3), RISING);
+  enableInterrupt(BUTTON_4, buttonPressed(4), RISING);*/
+}
 
 
 

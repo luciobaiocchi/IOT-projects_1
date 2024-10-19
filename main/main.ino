@@ -71,8 +71,9 @@ void buttontTwoPressed();
 void buttonThreePressed();
 void buttonFourPressed();
 void doAnimation();
-void checkEndTIme();
+void checkEndTime();
 void addInterruptsGame();
+void checkEndRedLed();
 
 
 int gameState = 0;
@@ -98,6 +99,7 @@ int randomNum = 0;
 void loop() {
   switch(gameState){
     case 0:
+      lcd.clear();
       setStartingTime();
       gameState = 1;
       break;
@@ -109,37 +111,38 @@ void loop() {
   	  break;
     case 2:
       Serial.println("game");
+      allLedOff();
       randomNum = 0;
       randomNum = getRandomNumber();
+      //in case the previus number is 2 digits and the actual number in only one this part of code clear the lcd 
+      lcd.setCursor(10, 0);
+      lcd.print("  ");
+    
       lcd.home();
       lcd.print("number -> "+ String(randomNum));
       //updating total time 
       totalTime = STANDARD_TIME - (gameDiff * 1000) - (gameRound * FACTOR); 
       Serial.println(totalTime);
-      allLedOff();
       setStartingTime();
       removeInterruptsForStartGame();
       addInterruptsGame();
       gameState = 3;
       break;
     case 3:
-      checkEndTIme();
+      checkEndTime();
       //Serial.println(String(buttons[0]) + String(buttons[1]) + String(buttons[2]) + String(buttons[3]));
       //updating total time 
       if (isCorrect()){
         gameState = 2;
         gameRound++;
         lcd.setCursor(8,1);
-        lcd.print("score" + String(gameRound));
+        lcd.print("score " + String(gameRound));
         Serial.print("win");
       }
       break;
     case 4:
-      lcd.clear();
-      lcd.home();
-      lcd.print("game over");
-      lcd.setCursor(0, 1);
-      lcd.print("score[" + String(gameRound) + "]");
+      checkEndRedLed();
+      removeInterruptsForSleep();
       break;
   }
 
@@ -149,7 +152,6 @@ void setStartingTime(){
   start_timer_time = millis();
 }
 
-  
 void fadingRedLed(){
   analogWrite(LED_S, redLedIntensity); 
   redLedIntensity = redLedIntensity + fadeAmount;
@@ -158,7 +160,6 @@ void fadingRedLed(){
   } 
   delay(22);
 }
-
 
 void checkIfGoSleep(){
   if (isTimeElapsed(10000)) {
@@ -241,6 +242,7 @@ int getRandomNumber(){
 }
 
 boolean isCorrect(){
+  
   float bin = 0;
   for (int i = 0; i < 4; i++){
     if (buttons[i] == 1){
@@ -251,13 +253,21 @@ boolean isCorrect(){
   return round(bin) == randomNum;
 }
 
-void checkEndTIme(){
+void checkEndTime(){
+  printTimeLeft();
   if (isTimeElapsed(totalTime)) {
     allLedOff();
     Serial.print("game Over");
+    
+    lcd.clear();
+    lcd.home();
+    lcd.print("   Game over");
+    lcd.setCursor(0, 1);
+    lcd.print("    score[" + String(gameRound) + "]");
+    digitalWrite(LED_S, HIGH);
+    setStartingTime();
     gameState = 4;
   }
-  printTimeLeft();
 }
 
 //print remaining time in this format : ex 5.75 seconds (the last number is either 0 or 5)
@@ -285,7 +295,6 @@ void addInterruptsGame(){
 void buttonOnePressed(){
   buttonAction(0, LED_1);
 }
-
 void buttontTwoPressed(){
   buttonAction(1, LED_2);
 }
@@ -306,6 +315,14 @@ void buttonAction(int index, int led){
   }
 }
 
+void checkEndRedLed(){
+  if (isTimeElapsed(1000)) {
+    digitalWrite(LED_S, LOW);
+  }if (isTimeElapsed(10000)) {
+    Serial.println("new Game");
+    gameState = 0;
+  }
+}
 
 
 

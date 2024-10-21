@@ -242,7 +242,7 @@ int getRandomNumber(){
 }
 
 boolean isCorrect(){
-  
+  int rev[4] = {0, 0, 0, 0};
   float bin = 0;
   for (int i = 0; i < 4; i++){
     if (buttons[i] == 1){
@@ -323,7 +323,6 @@ void checkEndRedLed(){
     gameState = 0;
   }
 }
-
 
 
 

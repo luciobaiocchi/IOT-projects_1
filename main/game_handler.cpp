@@ -105,7 +105,9 @@ void inGameState(){
       gameState = 2;
       gameRound++;
       displayWin(gameRound);
-      Serial.print("win");
+      //insert delay to avoid keep pressing button when next round is displayed
+      delay(200);
+      //Serial.print("win");
     }
 }
 

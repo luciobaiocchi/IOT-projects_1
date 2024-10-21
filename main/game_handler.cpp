@@ -22,6 +22,8 @@ int totalTime = 10000;
 long start_timer_time = 0;
 int gameRound = 0;
 int randomNum = 0;
+int clock = 0;
+
 
 
 void setupAll();
@@ -72,11 +74,16 @@ void initialSetup(){
     addInterruptsForStartGame();
 }
 
+//adding clock to make fading led and text scroll asyncronus
 void initialState(){
-    scrollText();
+    if (clock == GAME_CLOCK){
+      scrollText();
+      clock = 0;
+    }
     setDifficulty();
     fadingRedLed();
     checkIfGoSleep();
+    clock++;
 }
 
 void gameSetup(){
@@ -105,8 +112,12 @@ void inGameState(){
 
 
 void gameOverState(){
+    removeInterrupts();
     displayGameOver(gameRound);
+    totalTime = STANDARD_TIME;
+    gameRound = 0;
     gameOverLed();
+    delay(10000);
     switchGameState(INITIAL_SETUP);
 }
 
@@ -141,7 +152,7 @@ bool isCorrect(){
   float bin = 0;
   for (int i = 0; i < 4; i++){
     if (booleanButtons[i] == 1){
-    	bin = (bin + pow(2,i));
+    	bin = (bin + pow(2, 3 - i));
     }
   }
   Serial.println(round(bin));
@@ -166,7 +177,7 @@ void printTimeLeft(){
 }
 
 void checkIfGoSleep(){
-  if (isTimeElapsed(5000)) {
+  if (isTimeElapsed(STANDARD_TIME)) {
     allLedOff();
     removeInterrupts();
     addInterruptsForSleep(); 

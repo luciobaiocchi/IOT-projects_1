@@ -1,7 +1,7 @@
 #ifndef LCD_MANAGER_H
 #define LCD_MANAGER_H
 
-#define SCROLL_SPEED 30
+
 
 // Function Prototypes
 void initializeLCD();

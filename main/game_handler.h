@@ -8,9 +8,10 @@
 #define GAME_SETUP 2
 #define INGAME_STATE 3
 #define GAMEOVER_STATE 4
-
+#define FADE_SPEED 22
 #define STANDARD_TIME 10000
 #define FACTOR 500
+#define GAME_CLOCK 12
 
 // Function Prototypes
 void setupAll();

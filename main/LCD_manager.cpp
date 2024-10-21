@@ -8,7 +8,7 @@ String msg = "Welcome to GMB! Press B1 to Start!";
 int col = 0;
 
 
-LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,20,4);
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27,16,2);
 
 void initializeLCD();
 
@@ -30,16 +30,13 @@ void initializeLCD(){
 }
 
 void scrollText() {
-    if (col < msg.length() - 16) {
+    if (col < msg.length() - 15) {
         lcd.setCursor(0, 0);
-        lcd.print(" ");
         lcd.print(msg.substring(col, col + 16));
         col++;
-
     } else {
         col = 0;
     }
-    delay(SCROLL_SPEED);
 }
 
 
@@ -47,28 +44,28 @@ void displayNumber(int randomNum){
     lcd.setCursor(10, 0);
     lcd.print("  ");
     lcd.home();
-    lcd.print("number -> "+ String(randomNum));
+    lcd.print("Number -> " + String(randomNum) + "      ");
 }
 
 void displayWin(int gameRound){
-    lcd.setCursor(8,1);
-    lcd.print("score " + String(gameRound));
+    lcd.setCursor(0,1);
+    lcd.print("GOOD! Score: " + String(gameRound)+ "      ");
 }
 
 void displayGameOver(int gameRound){
     lcd.clear();
     lcd.home();
-    lcd.print("   Game over");
+    lcd.print("   Game over!");
     lcd.setCursor(0, 1);
-    lcd.print("    score[" + String(gameRound) + "]");
+    lcd.print(" Final score[" + String(gameRound) + "]");
 }
 
 void displayTimeLeft(int time){
-    lcd.setCursor(13,0);
+    lcd.setCursor(14,0);
     lcd.print(time);
 }
 
 void displayDifficulty(int gameDiff){
   lcd.setCursor(0, 1);
-  lcd.print(String("Difficolta: ") + String(gameDiff));
+  lcd.print(String("Difficulty: ") + String(gameDiff));
 }

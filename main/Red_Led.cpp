@@ -14,12 +14,18 @@ void gameOverLed();
 
 
 void fadingRedLed(){
+  if (redLedIntensity == 0) {
+    fadeAmount = 5;
+  } else if (redLedIntensity == 255) {
+    fadeAmount = -5; 
+  }
   analogWrite(LED_S, redLedIntensity); 
   redLedIntensity = redLedIntensity + fadeAmount;
-  if (redLedIntensity == MIN_INTENSITY || redLedIntensity == MAX_INTENSITY) {
+  if (redLedIntensity == MIN_INTENSITY || redLedIntensity == MAX_INTENSITY && redLedIntensity != 0) {
     fadeAmount = -fadeAmount; 
   } 
-  delay(22);
+  Serial.println(redLedIntensity);
+  delay(18);
 }
 
 

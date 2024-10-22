@@ -187,12 +187,13 @@ void checkIfGoSleep(){
     allLedOff();
     removeInterrupts();
     addInterruptsForSleep(); 
-    lcd.noBacklight();        
+    lcd.clear();
+    lcd.noBacklight();
     set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
     
     sleep_enable(); 
     sleep_mode();    
-    lcd.backlight();        
+    lcd.backlight();  
     Serial.println("WAKE UP");
     setStartingTime();
     sleep_disable();

@@ -1,8 +1,14 @@
+/**
+ * @file src.ino
+ * @brief Main Arduino sketch for the IOT project.
+ *
+ * This file contains the setup and loop functions for the Arduino-based IOT project.
+ * It includes necessary headers and handles the main game state logic.
+ */
+
+
 #include "Constants.h"
 #include "game_handler.h"
-
-
-
 
 void setup() {
   setupAll();

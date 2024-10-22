@@ -58,6 +58,8 @@ void displayGameOver(int gameRound){
     lcd.print("   Game over!");
     lcd.setCursor(0, 1);
     lcd.print(" Final score[" + String(gameRound) + "]");
+    
+
 }
 
 void displayTimeLeft(int time){

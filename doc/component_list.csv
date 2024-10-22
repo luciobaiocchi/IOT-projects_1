@@ -1,0 +1,8 @@
+﻿Nome,Quantità,Componente
+"U1",1," Arduino Uno R3"
+"DLs",1,"Rosso LED"
+"DL1, DL2, DL3, DL4",4,"Verde LED"
+"SB1, SB2, SB3, SB4",4," Pulsante"
+"R6, R7, R8, R9, R5, R4, R3, R2, R1",9,"1 kΩ Resistenza"
+"U2",1,"Basato su MCP23008, 32 (0x20) LCD 16 x 2 (I2C)"
+"Rpot2",1,"250 kΩ Potenziometro"

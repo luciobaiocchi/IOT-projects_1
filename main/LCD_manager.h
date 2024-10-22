@@ -11,6 +11,6 @@ void displayWin(int gameRound);
 void displayGameOver(int gameRound);
 void displayTimeLeft(int time);
 void displayDifficulty(int gameDiff);
-
+void displayGo();
 
 #endif 

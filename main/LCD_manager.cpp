@@ -62,10 +62,18 @@ void displayGameOver(int gameRound){
 
 void displayTimeLeft(int time){
     lcd.setCursor(14,0);
-    lcd.print(time);
+    lcd.print(String(time) + "s");
 }
 
 void displayDifficulty(int gameDiff){
   lcd.setCursor(0, 1);
   lcd.print(String("Difficulty: ") + String(gameDiff));
+}
+
+void displayGo(){
+    lcd.clear();
+    lcd.home();
+    lcd.print("       Go!");
+    lcd.setCursor(0, 1);
+    lcd.print("    Score: 0");
 }

@@ -87,6 +87,10 @@ void initialState(){
 }
 
 void gameSetup(){
+    if (gameRound == 0){
+      displayGo();
+      delay(2000);
+    }
     Serial.println("game");
     allLedOff();
     randomNum = 0;
@@ -183,11 +187,12 @@ void checkIfGoSleep(){
     allLedOff();
     removeInterrupts();
     addInterruptsForSleep(); 
+    lcd.noBacklight();        
     set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
     
     sleep_enable(); 
     sleep_mode();    
-
+    lcd.backlight();        
     Serial.println("WAKE UP");
     setStartingTime();
     sleep_disable();
